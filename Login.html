@@ -1,0 +1,122 @@
+﻿<!------ Include the above in your HEAD tag ---------->
+<!DOCTYPE html>
+<html>
+<head>
+    <!--Made with love by Mutiullah Samim -->
+    <!--Bootsrap 4 CDN-->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <!--Fontawesome CDN-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <!--Custom styles-->
+    <link href="StyleLogin.css" rel="stylesheet" />
+    <title>Login Page</title>
+
+    <script>
+        function init() {
+            if (localStorage["cgroup49"] != null) {
+                cgroup49 = JSON.parse(localStorage["cgroup49"])
+            }
+            else {
+                cgroup49 =
+                {
+                    users: [],
+                    current_user: "",
+                    current_apt: "",
+                    check_in_date: "",
+                    check_out_date: "",
+                    reviews: {}
+
+
+                }
+            }
+            if (cgroup49.current_user != "") {
+                $("#log_in").hide();
+
+            }
+
+        }
+        function login() {
+            var u_name = document.getElementById("user").value;
+            var u_password = document.getElementById("pass").value;
+            for (var i = 0; i < cgroup49.users.length; i++) {
+                if ((cgroup49.users[i].userName == u_name) && (cgroup49.users[i].userpassword == u_password)) {
+                    cgroup49.current_user = cgroup49.users[i];
+                    localStorage["cgroup49"] = JSON.stringify(cgroup49);
+                    location.replace("MainPage.html")
+                    return;
+                }
+            }
+            alert("Your details are incorrect, please try again.");
+        }
+        
+        
+
+    </script>
+</head>
+<body onload="init()">
+    <nav class="navbar navbar-expand-xl navbar-dark bg-dark">
+        <a class="navbar-brand" href="MainPage.html"> Airbnb Amsterdam </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#colNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="colNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="MainPage.html">Home Page</a>
+                </li>
+                <li class="nav-item">
+                    <a id="log_in" class="nav-link" href="Login.html">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="Registeration.html">Registeration</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="d-flex justify-content-center h-100">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Sign In</h3>
+                    <div class="d-flex justify-content-end social_icon">
+
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form>
+                        <div class="input-group form-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            </div>
+                            <input type="text" id="user" class="form-control" placeholder="username">
+
+                        </div>
+                        <div class="input-group form-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-key"></i></span>
+                            </div>
+                            <input type="password" id="pass" class="form-control" placeholder="password">
+                        </div>
+                        <div class="form-group">
+                            <input type="button" onclick="login()" id="myButton" value="Login" class="btn float-right login_btn">
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-center links">
+                        Don't have an account?
+                        <a href="Registeration.html">Sign up</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>

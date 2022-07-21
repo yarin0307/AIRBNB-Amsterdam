@@ -1,0 +1,147 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script src="apartments.js"></script>
+    <link href="StyleFavourites.css" rel="stylesheet" />
+    <title>My Favourites</title>
+    <script>
+        function init() {
+            if (localStorage["cgroup49"] != null) {
+                cgroup49 = JSON.parse(localStorage["cgroup49"])
+            }
+            else {
+                cgroup49 =
+                {
+                    users: [],
+                    current_user: "",
+                    current_apt: "",
+                    check_in_date: "",
+                    check_out_date: "",
+                    reviews: {}
+
+                }
+            }
+            for (var i = 0; i < cgroup49.users.length; i++) {
+                if (cgroup49.users[i].userName == cgroup49.current_user.userName) {
+                    for (var j = 0; j < cgroup49.users[i].usersfavourites.length; j++) {
+                        document.getElementById("fav_results").innerHTML += RenderFav(cgroup49.users[i].usersfavourites[j]);
+                    }
+                }
+            }
+        }
+        function RenderFav(obj) {
+            str = "<div class='ams'>";
+            str += "<h3><span class='first'>Id</span> - " + obj.id + "</h3>";
+            str += "<span class='first'>Link</span> - " + "<a href='" + obj.listing_url + "'>Get more details on Airbnb Web</a>";
+            str += "<h3><span class='first'>Name</span> - " + obj.name + "</h3>";
+            str += "<p>" + "<span class='first'>Description</span> - " + obj.description + "</p>";
+            str += "<h3><span class='first'>Price per night</span> - " + obj.price + "</h3>";
+            str += "<button type='button' value='" + amenities_details(obj) + "' onclick='update_modal(this.value)' class='btn btn-primary' data-toggle='modal' data-target='#mymodal'>More Details</button >";
+            str += "<button type ='button'class='btn btn-primary' onclick='remove_fav(" + obj.id + ")'>Remove From Favourites</button>";
+            str += "<button type ='button'class='btn btn-primary' onclick='link_map("+obj.latitude+","+obj.longitude+")'>Show On Map</button>";
+            str += "<img src='" + obj.picture_url + " '/>";
+            str += "</div>";
+            str += "</div>";
+            return str;
+
+        }
+        function amenities_details(obj) {
+
+            array_amenities = obj.amenities.split(",");
+            first_amenities = array_amenities[0].split("[");
+            last_amenities = array_amenities[array_amenities.length - 1].split("]");
+            var str = first_amenities[1];
+            for (var i = 1; i < array_amenities.length - 1; i++) {
+                str += array_amenities[i];
+            }
+            str += last_amenities[0];
+            return str;
+        }
+
+        function update_modal(val) {
+            document.getElementById("amenties_details").innerHTML = val;
+        }
+        function remove_fav(id) {
+            for (var i = 0; i < Amsterdam.length; i++) {
+                if (Amsterdam[i].id == id) {
+                    for (var j = 0; j < cgroup49.users.length; j++) {
+                        if (cgroup49.users[j].userName == cgroup49.current_user.userName) {
+                            for (var k = 0; k < cgroup49.users[j].usersfavourites.length; k++) {
+                                if (cgroup49.users[j].usersfavourites[k].id == id) {
+                                    cgroup49.users[j].usersfavourites.splice(k, 1);
+                                    alert("apartment was deleted from favourites");
+                                    location.replace("Favourites.html");
+                                }
+                            }
+                            localStorage["cgroup49"] = JSON.stringify(cgroup49);
+                        }
+                    }
+                }
+            }
+
+        }
+        function link_map(lat, long) {
+            window.open("https://maps.google.com/maps?q=" + lat + "," + long + "&hl=es;z=14&amp;output=embed", "_blank");
+        }
+        $(document).ready(function () {
+            if (cgroup49.current_user != "") {
+                $("#log_in").hide();
+
+            }
+        });
+        
+    </script>
+</head>
+<body onload="init()">
+    <nav class="navbar navbar-expand-xl navbar-dark bg-dark">
+        <a class="navbar-brand" href="MainPage.html"> Airbnb Amsterdam </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#colNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="colNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="MainPage.html">Home Page</a>
+                </li>
+                <li class="nav-item">
+                    <a id="log_in" class="nav-link" href="Login.html">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="Registeration.html">Registeration</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div id="fav_results" class="container-fluid">
+        <h1>My Favourites</h1>
+    </div>
+    <div class="modal" id="mymodal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Apartment Amenities</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+
+                <div id="amenties_details"></div>
+
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

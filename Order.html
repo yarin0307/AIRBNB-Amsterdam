@@ -1,0 +1,148 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <link href="StyleOrder.css" rel="stylesheet" />
+    <title>Order</title>
+    <script>
+        function init() {
+            if (localStorage["cgroup49"] != null) {
+                cgroup49 = JSON.parse(localStorage["cgroup49"])
+            }
+            else {
+                cgroup49 =
+                {
+                    users: [],
+                    current_user: "",
+                    current_apt: "",
+                    check_in_date: "",
+                    check_out_date: "",
+                    reviews: {}
+
+                }
+            }
+            var money = cgroup49.current_apt.price;
+            var cin = cgroup49.check_in_date;
+            var cout = cgroup49.check_out_date;
+            var price = money.split("$");
+            totalprice = price[1] * ((new Date(cout) - new Date(cin)) / (1000 * 3600 * 24));
+            document.getElementById("total_price").innerHTML += `Total amount is: ${totalprice}$`;
+        }
+    </script>
+    <script src="https://smtpjs.com/v3/smtp.js"></script>
+    <script>
+        function order_complete() {
+            Email.send({
+
+                Host: "smtp.elasticemail.com",
+                Username: "airbnbamsterdam1@gmail.com",
+                Password: "46718460429540E2D5348787CCD647938E3C",
+                To: cgroup49.current_user.userEmail,
+                From: "airbnbamsterdam1@gmail.com",
+                Subject: `AirBNB Amsterdam - Order Confirmation`,
+                Body: `Thank for your order! here some details:<br>Name of apartment: ${cgroup49.current_apt.name} <br>check in date: ${cgroup49.check_in_date} <br>check out date: ${cgroup49.check_out_date}<br> Total price: ${totalprice}$`,
+            }).then((success) => {
+
+                alert("Your order has been received. a confirmation has been sent by email Please check the spam folder in your mail.")
+                location.replace("MainPage.html");
+                ;
+            }).catch((error) => {
+
+                alert("error sending message");
+            })
+
+            for (var i = 0; i < cgroup49.users.length; i++) {
+                if (cgroup49.users[i].userName == cgroup49.current_user.userName) {
+                    vacation =
+                    {
+                        apt: cgroup49.current_apt,
+                        indate: cgroup49.check_in_date,
+                        outdate: cgroup49.check_out_date
+
+                    }
+                    cgroup49.users[i].userorders.push(vacation);
+                    localStorage["cgroup49"] = JSON.stringify(cgroup49);
+                    alert("Your order has been received - a confirmation has been sent by email");
+                    location.replace("MainPage.html");
+                }
+            }
+
+        }
+    </script>
+
+</head>
+<body onload="init()">
+    <!-- ==============================================
+          Credit Card Payment Section
+          =============================================== -->
+    <section class="credit-card">
+        <div class="container">
+            <div class="card-holder">
+                <div class="card-box bg-news">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div id="total_price">
+                                
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <form>
+                                <div class="card-details">
+                                    <h3 class="title">Credit Card Details</h3>
+                                    <div class="row">
+                                        <div class="form-group col-sm-7">
+                                            <div class="inner-addon right-addon">
+                                                <label for="card-holder">Card Holder</label>
+                                                <i class="far fa-user"></i>
+                                                <input id="card-holder" type="text" class="form-control" placeholder="Card Holder" aria-label="Card Holder" aria-describedby="basic-addon1">
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-sm-5">
+                                            <label for="">Expiration Date</label>
+                                            <div class="input-group expiration-date">
+                                                <input type="text" class="form-control" placeholder="MM" aria-label="MM" aria-describedby="basic-addon1">
+                                                <span class="date-separator">/</span>
+                                                <input type="text" class="form-control" placeholder="YY" aria-label="YY" aria-describedby="basic-addon1">
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-12">
+                                            <div class="inner-addon right-addon">
+                                                <label for="card-holder">ID</label>
+                                                <i class="far fa-user"></i>
+                                                <input id="card-holder-id" type="text" class="form-control" placeholder="ID" aria-label="Card Holder" aria-describedby="basic-addon1">
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-sm-8">
+                                            <div class="inner-addon right-addon">
+                                                <label for="card-number">Card Number</label>
+                                                <i class="far fa-credit-card"></i>
+                                                <input id="card-number" type="text" class="form-control" placeholder="Card Number" aria-label="Card Holder" aria-describedby="basic-addon1">
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-sm-4">
+                                            <label for="cvc">CVC</label>
+                                            <input id="cvc" type="text" class="form-control" placeholder="CVC" aria-label="Card Holder" aria-describedby="basic-addon1">
+                                        </div>
+                                        <div class="form-group col-sm-12">
+                                            <button type="button" onclick="order_complete()" class="btn btn-primary btn-block">Proceed</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+
+                        </div><!--/col-lg-6 -->
+
+                    </div><!--/row -->
+                </div><!--/card-box -->
+            </div><!--/card-holder -->
+
+        </div><!--/container -->
+    </section>
+</body>
+</html>

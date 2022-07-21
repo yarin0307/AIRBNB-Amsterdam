@@ -1,0 +1,38 @@
+﻿h1 {
+    text-align: center;
+}
+
+h4 {
+    text-align: left;
+}
+
+body {
+    background-color: lightgray;
+}
+
+img {
+    height: 50%;
+    width: 50%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border: 5px solid white;
+}
+
+.ams {
+    border: 2px solid black;
+    margin: 20px;
+    padding-bottom: 20px;
+}
+
+.first {
+    color: red;
+    font-weight: bold;
+    font-size: 20px;
+}
+.btn-primary {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+    margin-right: 1%;
+}
